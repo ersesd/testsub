@@ -1,7 +1,11 @@
 package com.sparta.travelnewsfeed.dto.response;
 
 import com.sparta.travelnewsfeed.user.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class UserResponseDto extends CommonResponseDto{
     private Long id;
     private String username;
@@ -15,6 +19,5 @@ public class UserResponseDto extends CommonResponseDto{
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.phone_number = user.getPhone_number();
-
     }
 }

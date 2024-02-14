@@ -9,6 +9,7 @@ import com.sparta.travelnewsfeed.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,11 +37,14 @@ public class UserService {
         User user = getUser(username);
         return new UserResponseDto(user);
     }
-    public UserResponseDto updateUser(String password, UserRequestDto userRequestDto, User user) {
-        if(passwordEncoder.matches(password, user.getPassword())) {
-            User newUser = getUser(userRequestDto.getUsername());
-            newUser.update(userRequestDto);
-            return new UserResponseDto(newUser);
+
+    @Transactional
+    public UserResponseDto updateUser(User user, UserRequestDto userRequestDto) {
+        if(passwordEncoder.matches( userRequestDto.getPassword(),user.getPassword())) {
+            user.update(userRequestDto);
+            System.out.println("userRequestDto.사용자이름" + userRequestDto.getUsername());
+            System.out.println("entity update메서드 후 사용자 이름" + user.getUsername());
+            return new UserResponseDto(user);
         } else {  throw new IllegalAccessError("비밀번호가 일치하지 않습니다.");
         }
     }
