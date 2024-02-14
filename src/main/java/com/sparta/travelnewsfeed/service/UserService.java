@@ -50,7 +50,7 @@ public class UserService {
         if(passwordEncoder.matches( userRequestDto.getPassword(),user.getPassword())) {
             User updateUser = userRepository.findByUsername(userRequestDto.getUsername()).orElseThrow(NoSuchElementException::new);
             updateUser.update(userRequestDto);
-            return new UserResponseDto(user);
+            return new UserResponseDto(updateUser);
         } else {  throw new IllegalAccessError("비밀번호가 일치하지 않습니다.");
         }
     }
