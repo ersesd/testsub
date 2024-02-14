@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -18,7 +20,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-
+    @Transactional
     public void signup (SignupRequestDto signupRequestDto){
         String username = signupRequestDto.getUsername();
         String email = signupRequestDto.getEmail();
@@ -38,20 +40,19 @@ public class UserService {
         return new UserResponseDto(user);
     }
 
-    @Transactional
-    public UserResponseDto updateUser(User user, UserRequestDto userRequestDto) {
-        if(passwordEncoder.matches( userRequestDto.getPassword(),user.getPassword())) {
-            user.update(userRequestDto);
-            System.out.println("userRequestDto.사용자이름" + userRequestDto.getUsername());
-            System.out.println("entity update메서드 후 사용자 이름" + user.getUsername());
-            return new UserResponseDto(user);
-        } else {  throw new IllegalAccessError("비밀번호가 일치하지 않습니다.");
-        }
-    }
-
     public User getUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 사용자입니다."));
+    }
+
+    @Transactional
+    public UserResponseDto updateUser(User user, UserRequestDto userRequestDto) {
+        if(passwordEncoder.matches( userRequestDto.getPassword(),user.getPassword())) {
+            User updateUser = userRepository.findByUsername(userRequestDto.getUsername()).orElseThrow(NoSuchElementException::new);
+            updateUser.update(userRequestDto);
+            return new UserResponseDto(user);
+        } else {  throw new IllegalAccessError("비밀번호가 일치하지 않습니다.");
+        }
     }
 
 }

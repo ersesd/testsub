@@ -50,7 +50,6 @@ public class UserController {
     public ResponseEntity<UserResponseDto> updateUser(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserRequestDto userRequestDto) {
         try {
             UserResponseDto responseDTO = userService.updateUser(userDetails.getUser(),userRequestDto);
-            System.out.println("서비스 거친 후 컨트롤러 username : " + responseDTO.getUsername());
             return ResponseEntity.ok().body(responseDTO);
         } catch (RejectedExecutionException | IllegalArgumentException ex) {
             return null;
