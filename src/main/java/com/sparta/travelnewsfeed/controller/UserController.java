@@ -56,6 +56,12 @@ public class UserController {
         }
     }
 
+    @PutMapping("/logout")
+    public String logout () {
+        return "redirect:/login";
+    }
+
+
 }
 
 
